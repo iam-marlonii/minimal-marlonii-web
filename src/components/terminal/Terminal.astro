@@ -34,13 +34,15 @@
 		border: 2px solid rgba(105, 215, 242, 0.3);
 		border-radius: 20px;
 		padding: 20px;
-		font-family: 'Kode Mono', monospace;
+		font-family: 'JetBrains Mono', monospace;
 		font-size: 14px;
 		color: #ffffff;
 		caret-color: #69D7F2;
 		caret-shape: block;
 		display: flex;
 		flex-direction: column;
+		overflow: hidden;
+		overflow-y: auto;
 		height: 60vh;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 	}
@@ -48,7 +50,9 @@
 	.terminal-output {
 		flex: 1;
 		min-height: 0;
-		overflow-y: auto;
+		/* overflow-y: scroll;
+		overflow-x: hidden;
+		overflow: auto; */
 		margin-bottom: 10px;
 		line-height: 1.6;
 	}
@@ -56,6 +60,20 @@
 	.terminal-output::-webkit-scrollbar {
 		width: 8px;
 	}
+
+	:global(#terminal-output) {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+:global(.terminal-line.terminal-banner) {
+  white-space: pre;
+  word-wrap: normal;
+}
 
 	.terminal-output::-webkit-scrollbar-track {
 		background: rgba(105, 215, 242, 0.1);
@@ -103,7 +121,7 @@
 		color: #69D7F2;
 		-webkit-text-fill-color: #69D7F2;
 		caret-shape: block;
-		font-family: 'Kode Mono', monospace;
+		font-family: 'JetBrains Mono', monospace;
 		font-size: 14px;
 		flex: 1;
 		min-width: 20px;

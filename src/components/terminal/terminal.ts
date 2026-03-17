@@ -47,10 +47,14 @@ export class Terminal {
 
 		// Add welcome message
 
+		// Add welcome message / banner
+
 		this.addOutput('--------------------------------');
 		this.addOutput('Welcome to my website!');
 		this.addOutput('Type "help" to see available commands.');
 		this.addOutput('--------------------------------');
+                                           
+                                           
 
 		// Set up event listeners
 		this.input.addEventListener('keydown', (e) => this.handleKeyDown(e));
