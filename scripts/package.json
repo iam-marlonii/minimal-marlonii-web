@@ -1,0 +1,17 @@
+{
+  "name": "marlonii-shared-scripts",
+  "private": true,
+  "type": "module",
+  "version": "0.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.3"
+  }
+}
+
