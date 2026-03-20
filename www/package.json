@@ -1,5 +1,5 @@
 {
-  "name": "marlonjrwebsite",
+  "name": "www-marlonii",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -9,8 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.12",
+    "@astrojs/cloudflare": "^13.1.2",
     "@tailwindcss/vite": "^4.1.18",
-    "astro": "^5.17.3"
+    "astro": "^6.0.7"
   }
 }
