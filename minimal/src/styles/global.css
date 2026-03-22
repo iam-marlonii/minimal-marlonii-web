@@ -30,10 +30,6 @@
 	--color-parchment: var(--color-Parchment);
 }
 
-* {
-	font-family: 'Geist', sans-serif;
-}
-
 .font-jetbrains-mono,
 .font-jetbrains-mono * {
 	font-family: 'JetBrains Mono', monospace;
