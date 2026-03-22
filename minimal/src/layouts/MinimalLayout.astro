@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+import MinimalMenu from '../components/menus/MinimalMenu.astro';
+import MinimalSidebar from '../components/menus/MinimalSidebar.astro';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700" rel="stylesheet" />
+		<title>Marlon Ausby II</title>
+	</head>
+	<body>
+		<div class="mesh-background"></div>
+		<MinimalMenu currentPath={Astro.url.pathname} />
+		<div class="main-with-sidebar min-h-screen pt-20 lg:min-h-screen lg:pl-64 lg:pt-14">
+			<slot />
+		</div>
+		<MinimalSidebar currentPath={Astro.url.pathname} />
+	</body>
+</html>
+
+<style>
+	html {
+		margin: 0;
+		background-color:#00070d;
+	}
+	body {
+		margin: 0;
+		background:transparent;
+		color: #ffffff;
+		width: 100%;
+		min-height: 100%;
+		font-family: 'JetBrains Mono', monospace;
+	}
+</style>

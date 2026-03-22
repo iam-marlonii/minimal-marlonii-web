@@ -1,0 +1,236 @@
+---
+import { getIconWithColor } from '../../config/icons';
+import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
+
+const skyBlue = 'var(--color-skyBlue)';
+
+interface Props {
+	currentPath?: string;
+}
+
+const currentPath = Astro.props.currentPath ?? Astro.url.pathname ?? '/';
+const normalizedPath = currentPath.replace(/\/$/, '') || '/';
+const isActive = (href: string) => normalizedPath === (href.replace(/\/$/, '') || '/');
+
+interface ColumnLink {
+	title: string;
+	href: string;
+	external?: boolean;
+}
+
+interface SocialLink extends ColumnLink {
+	icon: string;
+	ariaLabel: string;
+}
+
+interface FooterColumn {
+	title: string;
+	items: ColumnLink[] | SocialLink[];
+	isSocial?: boolean;
+}
+
+const footerColumns: FooterColumn[] = [
+	{
+		title: 'Me',
+		items: [
+			{ title: 'About', href: '/about' },
+			{ title: 'Resume', href: '/resume' },
+			{ title: 'Contact', href: '/contact' },
+			{ title: 'Cheesecake', href: '/cheesecake' },
+		],
+	},
+	{
+		title: 'Resources',
+		items: [
+			{ title: 'Blog', href: '/blog' },
+			{ title: 'Tools', href: '/tools' },
+			{ title: 'Templates', href: '/templates' },
+		],
+	},
+	{
+		title: 'Projects',
+		items: [
+			{ title: 'All Projects', href: '/projects' },
+			{ title: 'GitChem', href: 'https://the7thlab.com/projects/gitchem' },
+			{ title: 'CRM.1', href: 'https://the7thlab.com/projects/crm-dot-one' },
+			{ title: 'py_glades', href: 'https://the7thlab.com/projects/py-glades' },
+		],
+	},
+	{
+		title: 'Social',
+		isSocial: true,
+		items: [
+			{ title: 'GitHub', href: 'https://github.com/the7thlab', icon: 'github', ariaLabel: 'GitHub', external: true },
+			{ title: 'Twitter', href: 'https://twitter.com/the7thlab', icon: 'twitter', ariaLabel: 'Twitter', external: true },
+			{ title: 'Instagram', href: 'https://instagram.com/the7thlab', icon: 'instagram', ariaLabel: 'Instagram', external: true },
+			{ title: 'YouTube', href: 'https://youtube.com/@the7thlab', icon: 'youtube', ariaLabel: 'YouTube', external: true },
+			{ title: 'LinkedIn', href: 'https://linkedin.com/company/the-7th-lab', icon: 'linkedin', ariaLabel: 'LinkedIn', external: true },
+		] as SocialLink[],
+	},
+];
+
+const linkClass =
+	'block rounded-md px-2 py-1.5 text-sm text-(--color-Timberwolf) transition-colors hover:bg-(--color-skyBlue)/20 hover:text-white';
+const linkActiveClass = 'bg-(--color-skyBlue)/25 text-white';
+---
+
+<div
+	id="sidebar-backdrop"
+	class="sidebar-backdrop fixed inset-0 z-210 bg-black/55 opacity-0 pointer-events-none transition-opacity duration-200 lg:z-100 lg:hidden"
+	aria-hidden="true"
+></div>
+
+<button
+	type="button"
+	id="sidebar-open"
+	class="sidebar-fab fixed bottom-4 left-4 z-220 flex h-12 w-12 items-center justify-center rounded-full border-2 border-(--color-skyBlue)/50 bg-black/90 text-(--color-skyBlue) shadow-lg backdrop-blur-sm transition-colors hover:border-(--color-skyBlue) hover:bg-(--color-skyBlue)/10 lg:hidden"
+	aria-expanded="false"
+	aria-controls="minimal-sidebar-panel"
+>
+	<span class="sr-only">Open site menu</span>
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="h-5 w-5" fill="currentColor" aria-hidden="true">
+		<path
+			d="M64 128C64 110.3 78.3 96 96 96L544 96C561.7 96 576 110.3 576 128C576 145.7 561.7 160 544 160L96 160C78.3 160 64 145.7 64 128zM64 320C64 302.3 78.3 288 96 288L544 288C561.7 288 576 302.3 576 320C576 337.7 561.7 352 544 352L96 352C78.3 352 64 337.7 64 320zM64 512C64 494.3 78.3 480 96 480L544 480C561.7 480 576 494.3 576 512C576 529.7 561.7 544 544 544L96 544C78.3 544 64 529.7 64 512z"
+		></path>
+	</svg>
+</button>
+
+<aside
+	id="minimal-sidebar-panel"
+	class="sidebar-panel fixed left-0 top-0 z-210 flex h-screen w-64 max-w-[min(280px,calc(100vw-1rem))] flex-col border-r border-(--color-skyBlue)/30 bg-[#050a10]/95 pb-6 pt-4 shadow-[4px_0_24px_rgba(0,0,0,0.35)] backdrop-blur-md lg:z-105 lg:pt-5"
+	aria-label="Site navigation"
+>
+	<div class="mb-4 flex shrink-0 items-center gap-2 border-b border-(--color-skyBlue)/20 px-4 pb-3">
+		<a href="/" class="flex items-center gap-2 text-white transition-opacity hover:opacity-90">
+			<span class="">EXPLORER</span>
+		</a>
+		<button
+			type="button"
+			id="sidebar-close"
+			class="ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-(--color-skyBlue)/40 text-(--color-skyBlue) transition-colors hover:bg-(--color-skyBlue)/15 lg:hidden"
+			aria-label="Close site menu"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="h-4 w-4" fill="currentColor">
+				<path
+					d="M180.1 137.7C191.4 126.4 209.6 126.4 220.9 137.7L320 236.7L419.1 137.7C430.4 126.4 448.6 126.4 459.9 137.7C471.2 148.9 471.2 167.2 459.9 178.5L360.8 277.5L459.9 376.6C471.2 387.9 471.2 406.1 459.9 417.4C448.6 428.7 430.4 428.7 419.1 417.4L320 318.3L220.9 417.4C209.6 428.7 191.4 428.7 180.1 417.4C168.8 406.1 168.8 387.9 180.1 376.6L279.2 277.5L180.1 178.5C168.8 167.2 168.8 148.9 180.1 137.7z"
+				></path>
+			</svg>
+		</button>
+	</div>
+
+	<nav class="sidebar-scroll flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto overscroll-contain px-4 font-jetbrains-mono">
+        <details class="sidebar-section">
+            <summary class="sidebar-section-title">
+                MARLON_AUSBY_II
+            </summary>
+            <ul class="sidebar-section-list">
+                <li>
+                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
+                        <span class="w-4 h-4 flex shrink-0" set:html={getIconWithColor('github', skyBlue)} />home.md
+                    </a></li>
+                <li><a href="/about" class="sidebar-section-link">experience.ts</a></li>
+                <li><a href="/projects" class="sidebar-section-link">education.css</a></li>
+                <li><a href="/contact" class="sidebar-section-link">projects.sql</a></li>
+                <li><a href="/resume" class="sidebar-section-link">contact.html</a></li>
+                <li><a href="/blog" class="sidebar-section-link">resume.pdf</a></li>
+            </ul>
+        </details>
+	</nav>
+</aside>
+
+<style>
+	.sidebar-panel {
+		transform: translateX(-100%);
+		transition: transform 200ms ease-out;
+	}
+	@media (min-width: 1024px) {
+		.sidebar-panel {
+			transform: translateX(0);
+		}
+	}
+	.sidebar-panel.is-open {
+		transform: translateX(0);
+	}
+	.sidebar-backdrop.is-visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+	.sidebar-scroll {
+		scrollbar-width: thin;
+		scrollbar-color: color-mix(in srgb, var(--color-skyBlue) 35%, transparent) transparent;
+	}
+	.sidebar-scroll::-webkit-scrollbar {
+		width: 6px;
+	}
+	.sidebar-scroll::-webkit-scrollbar-thumb {
+		background: color-mix(in srgb, var(--color-skyBlue) 35%, transparent);
+		border-radius: 999px;
+	}
+	:global(.sidebar-open) {
+		overflow: hidden;
+	}
+	@media (min-width: 1024px) {
+		:global(.sidebar-open) {
+			overflow: auto;
+		}
+	}
+</style>
+
+<script>
+	function initSidebar() {
+		const panel = document.getElementById('minimal-sidebar-panel');
+		const backdrop = document.getElementById('sidebar-backdrop');
+		const openBtn = document.getElementById('sidebar-open');
+		const closeBtn = document.getElementById('sidebar-close');
+
+		if (!panel || !backdrop || !openBtn) return;
+
+		const elPanel = panel;
+		const elBackdrop = backdrop;
+		const elOpenBtn = openBtn;
+
+		const isLarge = () => window.matchMedia('(min-width: 1024px)').matches;
+
+		function setOpen(open: boolean) {
+			if (isLarge()) {
+				elPanel.classList.remove('is-open');
+				elBackdrop.classList.remove('is-visible');
+				document.documentElement.classList.remove('sidebar-open');
+				elOpenBtn.setAttribute('aria-expanded', 'false');
+				return;
+			}
+			elPanel.classList.toggle('is-open', open);
+			elBackdrop.classList.toggle('is-visible', open);
+			document.documentElement.classList.toggle('sidebar-open', open);
+			elOpenBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+		}
+
+		elOpenBtn.addEventListener('click', () => {
+			setOpen(!elPanel.classList.contains('is-open'));
+		});
+
+		closeBtn?.addEventListener('click', () => setOpen(false));
+
+		elBackdrop.addEventListener('click', () => setOpen(false));
+
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape' && elPanel.classList.contains('is-open')) setOpen(false);
+		});
+
+		window.addEventListener('resize', () => {
+			if (isLarge()) setOpen(false);
+		});
+
+		elPanel.addEventListener('click', (e) => {
+			const a = (e.target as HTMLElement | null)?.closest?.('a');
+			if (!a || !elPanel.contains(a)) return;
+			if (!isLarge()) setOpen(false);
+		});
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initSidebar);
+	} else {
+		initSidebar();
+	}
+</script>
