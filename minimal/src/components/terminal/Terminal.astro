@@ -2,7 +2,7 @@
 // Terminal component wrapper
 ---
 
-<div id="terminal-container" class="terminal-container"></div>
+<div id="terminal-container" class="terminal-container min-h-0 flex-1"></div>
 
 <script>
 	import { Terminal } from './terminal';
@@ -25,26 +25,36 @@
 
 <style>
 	.terminal-container {
+		box-sizing: border-box;
 		width: 100%;
-		min-width:1080px;
-		max-width: 1280px;
+		min-width: 0;
+		max-width: 100%;
+		min-height: 12rem;
+		height: 100%;
+		max-height: 100%;
 		background-color: rgba(10, 10, 10, 0.95);
 		backdrop-filter: blur(100px);
 		-webkit-backdrop-filter: blur(100px);
 		border: 2px solid rgba(105, 215, 242, 0.3);
-		border-radius: 20px;
-		padding: 20px;
+		border-radius: clamp(10px, 2vw, 20px);
+		padding: clamp(10px, 2.5vw, 20px);
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 14px;
+		font-size: clamp(12px, 0.85rem + 0.35vw, 14px);
+		line-height: 1.55;
 		color: #ffffff;
-		caret-color: #69D7F2;
+		caret-color: #69d7f2;
 		caret-shape: block;
 		display: flex;
 		flex-direction: column;
 		overflow: hidden;
-		overflow-y: auto;
-		height: 60vh;
 		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+	}
+
+	@media (max-width: 639px) {
+		.terminal-container {
+			border-radius: 12px;
+			padding: 10px 12px;
+		}
 	}
 
 	.terminal-output {
@@ -118,14 +128,15 @@
 		border-color: transparent;
 		outline: none;
 		box-shadow: none;
-		color: #69D7F2;
-		-webkit-text-fill-color: #69D7F2;
+		color: #69d7f2;
+		-webkit-text-fill-color: #69d7f2;
 		caret-shape: block;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 14px;
+		font-family: inherit;
+		font-size: inherit;
+		line-height: inherit;
 		flex: 1;
-		min-width: 20px;
-		caret-color: #69D7F2;
+		min-width: 0;
+		caret-color: #69d7f2;
 	}
 
 	.terminal-input:focus,
