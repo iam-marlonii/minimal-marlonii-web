@@ -1,8 +1,7 @@
 ---
-import { getIconWithColor } from '../../config/icons';
+import { getIcon } from '../../config/icons';
+import Terminal from '../terminal/Terminal.astro';
 import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
-
-const skyBlue = 'var(--color-skyBlue)';
 
 interface Props {
 	currentPath?: string;
@@ -12,65 +11,8 @@ const currentPath = Astro.props.currentPath ?? Astro.url.pathname ?? '/';
 const normalizedPath = currentPath.replace(/\/$/, '') || '/';
 const isActive = (href: string) => normalizedPath === (href.replace(/\/$/, '') || '/');
 
-interface ColumnLink {
-	title: string;
-	href: string;
-	external?: boolean;
-}
-
-interface SocialLink extends ColumnLink {
-	icon: string;
-	ariaLabel: string;
-}
-
-interface FooterColumn {
-	title: string;
-	items: ColumnLink[] | SocialLink[];
-	isSocial?: boolean;
-}
-
-const footerColumns: FooterColumn[] = [
-	{
-		title: 'Me',
-		items: [
-			{ title: 'About', href: '/about' },
-			{ title: 'Resume', href: '/resume' },
-			{ title: 'Contact', href: '/contact' },
-			{ title: 'Cheesecake', href: '/cheesecake' },
-		],
-	},
-	{
-		title: 'Resources',
-		items: [
-			{ title: 'Blog', href: '/blog' },
-			{ title: 'Tools', href: '/tools' },
-			{ title: 'Templates', href: '/templates' },
-		],
-	},
-	{
-		title: 'Projects',
-		items: [
-			{ title: 'All Projects', href: '/projects' },
-			{ title: 'GitChem', href: 'https://the7thlab.com/projects/gitchem' },
-			{ title: 'CRM.1', href: 'https://the7thlab.com/projects/crm-dot-one' },
-			{ title: 'py_glades', href: 'https://the7thlab.com/projects/py-glades' },
-		],
-	},
-	{
-		title: 'Social',
-		isSocial: true,
-		items: [
-			{ title: 'GitHub', href: 'https://github.com/the7thlab', icon: 'github', ariaLabel: 'GitHub', external: true },
-			{ title: 'Twitter', href: 'https://twitter.com/the7thlab', icon: 'twitter', ariaLabel: 'Twitter', external: true },
-			{ title: 'Instagram', href: 'https://instagram.com/the7thlab', icon: 'instagram', ariaLabel: 'Instagram', external: true },
-			{ title: 'YouTube', href: 'https://youtube.com/@the7thlab', icon: 'youtube', ariaLabel: 'YouTube', external: true },
-			{ title: 'LinkedIn', href: 'https://linkedin.com/company/the-7th-lab', icon: 'linkedin', ariaLabel: 'LinkedIn', external: true },
-		] as SocialLink[],
-	},
-];
-
 const linkClass =
-	'block rounded-md px-2 py-1.5 text-sm text-(--color-Timberwolf) transition-colors hover:bg-(--color-skyBlue)/20 hover:text-white';
+	'block rounded-md px-2 py-1.5 text-sm text-(--color-timberwolf) transition-colors hover:bg-(--color-skyBlue)/20 hover:text-white';
 const linkActiveClass = 'bg-(--color-skyBlue)/25 text-white';
 ---
 
@@ -101,9 +43,19 @@ const linkActiveClass = 'bg-(--color-skyBlue)/25 text-white';
 	aria-label="Site navigation"
 >
 	<div class="mb-4 flex shrink-0 items-center gap-2 border-b border-(--color-skyBlue)/20 px-4 pb-3">
-		<a href="/" class="flex items-center gap-2 text-white transition-opacity hover:opacity-90">
-			<span class="">EXPLORER</span>
-		</a>
+        <div class="flex items-center justify-between w-full">
+            <div class="flex items-center gap-2 text-white transition-opacity hover:opacity-90">
+                <span class="">EXPLORER</span>
+            </div>
+            <button
+			type="button"
+            id="terminal-toggle"
+			aria-expanded="false"
+			aria-controls="terminal-dropdown"
+            class="relative flex items-center z-10 p-1 cursor-pointer gap-2 text-sm bg-black border-2 border-(--color-skyBlue)/40 hover:border-(--color-skyBlue) transition-colors duration-200">
+            <span class="w-4 h-4 flex shrink-0 text-white" set:html={getIcon('terminal')} />
+        </button>
+        </div>
 		<button
 			type="button"
 			id="sidebar-close"
@@ -119,24 +71,108 @@ const linkActiveClass = 'bg-(--color-skyBlue)/25 text-white';
 	</div>
 
 	<nav class="sidebar-scroll flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto overscroll-contain px-4 font-jetbrains-mono">
-        <details class="sidebar-section">
-            <summary class="sidebar-section-title">
+        <details open class="sidebar-section">
+            <summary class="sidebar-section-title flex cursor-pointer list-none flex-row items-center gap-2 [&::-webkit-details-marker]:hidden">
+                <span
+                    class="sidebar-disclosure-caret flex h-3.5 w-3.5 shrink-0 items-center justify-center"
+                    aria-hidden="true"
+                    set:html={getIcon('chevron-down')}
+                />
+                <span class="relative h-4 w-4 shrink-0 text-(--color-gray)" aria-hidden="true">
+                    <span
+                        class="sidebar-folder-icon-open absolute inset-0 flex items-center justify-center[&_svg]:h-full [&_svg]:w-full"
+                        set:html={getIcon('folder-open')}
+                    />
+                    <span
+                        class="sidebar-folder-icon-closed absolute inset-0 flex items-center justify-center[&_svg]:h-full [&_svg]:w-full"
+                        set:html={getIcon('folder-closed')}
+                    />
+                </span>
                 MARLON_AUSBY_II
             </summary>
-            <ul class="sidebar-section-list">
+            <ul class="sidebar-section-list ml-6">
                 <li>
                     <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
-                        <span class="w-4 h-4 flex shrink-0" set:html={getIconWithColor('github', skyBlue)} />home.md
-                    </a></li>
-                <li><a href="/about" class="sidebar-section-link">experience.ts</a></li>
-                <li><a href="/projects" class="sidebar-section-link">education.css</a></li>
-                <li><a href="/contact" class="sidebar-section-link">projects.sql</a></li>
-                <li><a href="/resume" class="sidebar-section-link">contact.html</a></li>
-                <li><a href="/blog" class="sidebar-section-link">resume.pdf</a></li>
+                        <span class="w-4 h-4 flex shrink-0 text-(--color-skyBlue)" set:html={getIcon('file-text')} />
+                        home.md
+                    </a>
+                </li>
+                <li>
+                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
+                        <span class="w-4 h-4 flex shrink-0 text-[#3a86ff]" set:html={getIcon('code')} />
+                        experience.ts
+                    </a>
+                </li>
+                <li>
+                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
+                        <span class="w-4 h-4 flex shrink-0 text-[#ff8fab]" set:html={getIcon('palette')} />
+                        education.css
+                    </a>
+                </li>
+                <li>
+                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
+                        <span class="w-4 h-4 flex shrink-0 text-[#ffbe0b]" set:html={getIcon('sql')} />
+                        projects.sql
+                    </a>
+                </li>
+                <li>
+                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
+                        <span class="w-4 h-4 flex shrink-0 text-[#ffe6a7]" set:html={getIcon('globe')} />
+                        contact.html
+                    </a>
+                </li>
+                <li>
+                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
+                        <span class="w-4 h-4 flex shrink-0 text-(--color-vermilion)" set:html={getIcon('download-file')} />
+                        resume.pdf
+                    </a>
+                </li>
             </ul>
         </details>
+
 	</nav>
 </aside>
+
+<!-- Terminal: bottom sheet (outside aside so it isn’t clipped by sidebar stacking/overflow) -->
+<div
+	id="terminal-sheet-backdrop"
+	class="terminal-sheet-backdrop fixed inset-0 z-[230] bg-black/55 opacity-0 pointer-events-none transition-opacity duration-300"
+	aria-hidden="true"
+></div>
+<div
+	id="terminal-dropdown"
+	class="terminal-sheet-panel pointer-events-none fixed inset-x-0 bottom-0 z-[231] flex justify-center px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:px-4 sm:pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+	role="dialog"
+	aria-modal="true"
+	aria-labelledby="terminal-sheet-title"
+	aria-hidden="true"
+>
+	<div
+		class="terminal-sheet-surface flex w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-(--color-skyBlue)/35 border-b-0 bg-[#050a10]/98 shadow-[0_-8px_40px_rgba(0,0,0,0.45)] backdrop-blur-md lg:max-w-6xl"
+	>
+		<div class="flex shrink-0 flex-col gap-2 border-b border-(--color-skyBlue)/20 px-3 pb-3 pt-2 sm:px-4 sm:pb-3 sm:pt-2.5">
+			<div class="mx-auto h-1 w-10 shrink-0 rounded-full bg-(--color-skyBlue)/25" aria-hidden="true"></div>
+			<div class="flex items-center justify-between gap-3">
+				<h2 id="terminal-sheet-title" class="text-sm font-medium tracking-wide text-white sm:text-base">Terminal</h2>
+				<button
+					type="button"
+					id="terminal-sheet-close"
+					class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-(--color-skyBlue)/40 text-(--color-skyBlue) transition-colors hover:bg-(--color-skyBlue)/15"
+					aria-label="Close terminal"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" class="h-4 w-4" fill="currentColor" aria-hidden="true">
+						<path
+							d="M180.1 137.7C191.4 126.4 209.6 126.4 220.9 137.7L320 236.7L419.1 137.7C430.4 126.4 448.6 126.4 459.9 137.7C471.2 148.9 471.2 167.2 459.9 178.5L360.8 277.5L459.9 376.6C471.2 387.9 471.2 406.1 459.9 417.4C448.6 428.7 430.4 428.7 419.1 417.4L320 318.3L220.9 417.4C209.6 428.7 191.4 428.7 180.1 417.4C168.8 406.1 168.8 387.9 180.1 376.6L279.2 277.5L180.1 178.5C168.8 167.2 168.8 148.9 180.1 137.7z"
+						></path>
+					</svg>
+				</button>
+			</div>
+		</div>
+		<div class="terminal-sheet-body flex min-h-0 w-full flex-1 flex-col overflow-hidden px-2 pb-3 pt-0 sm:px-3 md:px-4">
+			<Terminal client:idle />
+		</div>
+	</div>
+</div>
 
 <style>
 	.sidebar-panel {
@@ -172,6 +208,75 @@ const linkActiveClass = 'bg-(--color-skyBlue)/25 text-white';
 	@media (min-width: 1024px) {
 		:global(.sidebar-open) {
 			overflow: auto;
+		}
+	}
+
+	/* Details: custom caret + folder icons (hide native disclosure marker) */
+	.sidebar-section summary {
+		list-style: none;
+	}
+	.sidebar-section summary::-webkit-details-marker {
+		display: none;
+	}
+	.sidebar-disclosure-caret :global(svg) {
+		display: block;
+		transform-origin: center;
+		transition: transform 0.15s ease;
+	}
+	.sidebar-section:not([open]) .sidebar-disclosure-caret :global(svg) {
+		transform: rotate(-90deg);
+	}
+	.sidebar-section[open] .sidebar-folder-icon-closed {
+		display: none;
+	}
+	.sidebar-section:not([open]) .sidebar-folder-icon-open {
+		display: none;
+	}
+
+	.terminal-sheet-backdrop.is-visible {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.terminal-sheet-surface {
+		max-height: min(85dvh, calc(100dvh - 0.5rem));
+		overscroll-behavior: contain;
+		transform: translateY(100%);
+		transition: transform 320ms cubic-bezier(0.32, 0.72, 0, 1);
+		will-change: transform;
+	}
+	.terminal-sheet-panel.is-open .terminal-sheet-surface {
+		transform: translateY(0);
+	}
+
+	.terminal-sheet-body {
+		min-height: min(42dvh, 320px);
+		max-height: min(65dvh, 560px);
+	}
+	@media (min-width: 640px) {
+		.terminal-sheet-body {
+			min-height: min(40dvh, 340px);
+			max-height: min(62dvh, 580px);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.terminal-sheet-surface {
+			transition-duration: 0.01ms;
+		}
+	}
+
+	:global(html.terminal-open) {
+		overflow: hidden;
+	}
+	@media (min-width: 1024px) {
+		.terminal-sheet-body {
+			min-height: min(36dvh, 360px);
+			max-height: min(56dvh, 640px);
+		}
+	}
+	@media (min-width: 1280px) {
+		.terminal-sheet-body {
+			max-height: min(52dvh, 680px);
 		}
 	}
 </style>
@@ -232,5 +337,52 @@ const linkActiveClass = 'bg-(--color-skyBlue)/25 text-white';
 		document.addEventListener('DOMContentLoaded', initSidebar);
 	} else {
 		initSidebar();
+	}
+</script>
+
+<script>
+	function initTerminalToggle() {
+		const toggleButton = document.getElementById('terminal-toggle');
+		const sheet = document.getElementById('terminal-dropdown');
+		const backdrop = document.getElementById('terminal-sheet-backdrop');
+		const closeBtn = document.getElementById('terminal-sheet-close');
+
+		if (!toggleButton || !sheet || !backdrop) return;
+
+		const setOpen = (open: boolean) => {
+			sheet.classList.toggle('is-open', open);
+			backdrop.classList.toggle('is-visible', open);
+			backdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+			sheet.setAttribute('aria-hidden', open ? 'false' : 'true');
+			toggleButton.setAttribute('aria-expanded', open ? 'true' : 'false');
+			sheet.classList.toggle('pointer-events-none', !open);
+			document.documentElement.classList.toggle('terminal-open', open);
+		};
+
+		toggleButton.addEventListener('click', (e) => {
+			e.stopPropagation();
+			setOpen(!sheet.classList.contains('is-open'));
+		});
+
+		closeBtn?.addEventListener('click', () => setOpen(false));
+
+		backdrop.addEventListener('click', () => setOpen(false));
+
+		document.addEventListener(
+			'keydown',
+			(e) => {
+				if (e.key !== 'Escape' || !sheet.classList.contains('is-open')) return;
+				e.preventDefault();
+				e.stopPropagation();
+				setOpen(false);
+			},
+			true
+		);
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initTerminalToggle);
+	} else {
+		initTerminalToggle();
 	}
 </script>
