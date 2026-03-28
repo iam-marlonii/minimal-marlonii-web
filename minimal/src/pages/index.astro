@@ -1,34 +1,34 @@
 ---
 import MinimalLayout from '../layouts/MinimalLayout.astro';
+import { getFileById } from '../config/index';
+
+const url = new URL(Astro.request.url);
+const fileId = url.searchParams.get('file') || 'home';
+const activeFile = getFileById(fileId);
 ---
 
 <MinimalLayout>
-	<!-- <MainMenu /> -->
-
-	<section class="relative flex min-h-[calc(100vh-5rem)] flex-col items-center justify-center lg:min-h-[calc(100vh-3.5rem)]">
-		<container class="relative z-10 w-full h-full flex items-center justify-center px-4">
-			<div class="flex flex-col items-center gap-8 max-w-[1080px] h-full text-center">
-				<div class="flex gap-3 items-center justify-center px-4 py-1 rounded-lg bg-(--color-skyBlue)/30 border-[0.5px] border-(--color-skyBlue)/80">
-					<strong class="text-sm text-white">Status</strong>
-					<div class="flex items-center justify-center w-[0.5px] h-5 bg-(--color-skyBlue)/80"></div>
-					Continuously Seeking
-				</div>
-				<h1 class="text-5xl font-geist font-semibold text-white">
-					Building solutions with design and code
-				</h1>
-				<p class="text-xl text-(--color-Timberwolf) font-geist">
-					I'm a problem solver with a passion for building solutions that are not only functional, but also intuitive.
-				</p>
-			</div>
-			<div class="flex items-center justify-center gap-4">
-				
-			</div>
-		</container>
+	<section class="editor-section relative flex min-h-[calc(100vh-5rem)] flex-col lg:min-h-[calc(100vh-3.5rem)]">
+		<div class="editor-content-area flex-1 overflow-auto bg-[#0d1117] p-4 font-jetbrains-mono text-sm leading-6 text-[#abb2bf]">
+			<Fragment set:html={activeFile.content} />
+		</div>
 	</section>
-
-	<!-- <FooterMenu /> -->
 </MinimalLayout>
 
 <style>
-
+	.editor-section {
+		font-family: 'JetBrains Mono', monospace;
+	}
+	.editor-content-area {
+		scrollbar-width: thin;
+		scrollbar-color: color-mix(in srgb, var(--color-skyBlue) 25%, transparent) transparent;
+	}
+	.editor-content-area::-webkit-scrollbar {
+		width: 8px;
+		height: 8px;
+	}
+	.editor-content-area::-webkit-scrollbar-thumb {
+		background: color-mix(in srgb, var(--color-skyBlue) 25%, transparent);
+		border-radius: 999px;
+	}
 </style>

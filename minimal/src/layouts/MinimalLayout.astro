@@ -18,11 +18,11 @@ import MinimalSidebar from '../components/menus/MinimalSidebar.astro';
 	</head>
 	<body>
 		<div class="mesh-background"></div>
-		<MinimalMenu currentPath={Astro.url.pathname} />
-		<div class="main-with-sidebar min-h-screen pt-20 lg:min-h-screen lg:pl-64 lg:pt-14">
+		<MinimalMenu currentPath={Astro.url.pathname} activeFileId={Astro.url.searchParams.get('file') || 'home'} />
+		<div class="main-with-sidebar min-h-screen lg:min-h-screen lg:pl-64">
 			<slot />
 		</div>
-		<MinimalSidebar currentPath={Astro.url.pathname} />
+		<MinimalSidebar currentPath={Astro.url.pathname} activeFileId={Astro.url.searchParams.get('file') || 'home'} />
 	</body>
 </html>
 

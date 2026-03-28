@@ -1,7 +1,14 @@
 ---
 import { getIcon } from '../../config/icons';
+import { siteFiles } from '../../config/index';
 import Terminal from '../terminal/Terminal.astro';
-import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
+
+interface Props {
+	currentPath?: string;
+	activeFileId?: string;
+}
+
+const activeFileId = Astro.props.activeFileId || 'home';
 ---
 
 <div
@@ -30,7 +37,7 @@ import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
 	class="sidebar-panel fixed left-0 top-0 z-210 flex h-screen w-64 max-w-[min(280px,calc(100vw-1rem))] flex-col border-r border-(--color-skyBlue)/30 bg-[#050a10]/95 pb-6 shadow-[4px_0_24px_rgba(0,0,0,0.35)] backdrop-blur-md lg:z-105"
 	aria-label="Site navigation"
 >
-	<div class="flex h-16 shrink-0 items-center gap-2 border-b border-(--color-skyBlue)/30">
+	<div class="flex h-16 shrink-0 items-center gap-2 border-b border-(--color-skyBlue)/30 lg:h-14">
         <div class="flex min-h-0 min-w-0 flex-1 items-center justify-between px-4">
             <div class="flex items-center gap-2 text-white transition-opacity hover:opacity-90">
                 <span class="">EXPLORER</span>
@@ -79,49 +86,28 @@ import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
                 MARLON_AUSBY_II
             </summary>
             <ul class="sidebar-section-list ml-6">
-                <li>
-                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
-                        <span class="w-4 h-4 flex shrink-0 text-(--color-skyBlue)" set:html={getIcon('file-text')} />
-                        home.md
-                    </a>
-                </li>
-                <li>
-                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
-                        <span class="w-4 h-4 flex shrink-0 text-[#3a86ff]" set:html={getIcon('code')} />
-                        experience.ts
-                    </a>
-                </li>
-                <li>
-                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
-                        <span class="w-4 h-4 flex shrink-0 text-[#ff8fab]" set:html={getIcon('palette')} />
-                        education.css
-                    </a>
-                </li>
-                <li>
-                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
-                        <span class="w-4 h-4 flex shrink-0 text-[#ffbe0b]" set:html={getIcon('sql')} />
-                        projects.sql
-                    </a>
-                </li>
-                <li>
-                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
-                        <span class="w-4 h-4 flex shrink-0 text-[#ffe6a7]" set:html={getIcon('globe')} />
-                        contact.html
-                    </a>
-                </li>
-                <li>
-                    <a href="/" class="sidebar-section-link flex flex-row items-center gap-2 ">
-                        <span class="w-4 h-4 flex shrink-0 text-(--color-vermilion)" set:html={getIcon('download-file')} />
-                        resume.pdf
-                    </a>
-                </li>
+                {siteFiles.map((file) => (
+                    <li>
+                        <a
+                            href={`/?file=${file.id}`}
+                            class:list={[
+                                'sidebar-section-link flex flex-row items-center gap-2',
+                                { 'sidebar-link-active': file.id === activeFileId }
+                            ]}
+                            data-file-id={file.id}
+                        >
+                            <span class="w-4 h-4 flex shrink-0" style={`color: ${file.iconColor}`} set:html={getIcon(file.icon)} />
+                            {file.filename}
+                        </a>
+                    </li>
+                ))}
             </ul>
         </details>
 
 	</nav>
 </aside>
 
-<!-- Terminal: bottom sheet (outside aside so it isn’t clipped by sidebar stacking/overflow) -->
+<!-- Terminal: bottom sheet (outside aside so it isn't clipped by sidebar stacking/overflow) -->
 <div
 	id="terminal-sheet-backdrop"
 	class="terminal-sheet-backdrop fixed inset-0 z-230 bg-black/55 opacity-0 pointer-events-none transition-opacity duration-300"
@@ -153,7 +139,7 @@ import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
 			</div>
 		</div>
 		<div class="terminal-sheet-body flex min-h-0 w-full flex-1 flex-col overflow-hidden px-2 pb-3 pt-0 sm:px-3 md:px-4">
-			<Terminal client:idle />
+			<Terminal />
 		</div>
 	</div>
 </div>
@@ -195,7 +181,6 @@ import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
 		}
 	}
 
-	/* Details: custom caret + folder icons (hide native disclosure marker) */
 	.sidebar-section summary {
 		list-style: none;
 	}
@@ -215,6 +200,22 @@ import MarlonIIColorLogo from '../../assets/logos/marlonii-ColorLogo.svg?url';
 	}
 	.sidebar-section:not([open]) .sidebar-folder-icon-open {
 		display: none;
+	}
+
+	.sidebar-section-link {
+		padding: 0.25rem 0.5rem;
+		border-radius: 0.25rem;
+		text-decoration: none;
+		color: var(--color-Timberwolf);
+		font-size: 0.8125rem;
+		transition: background-color 0.15s ease;
+	}
+	.sidebar-section-link:hover {
+		background-color: color-mix(in srgb, var(--color-skyBlue) 15%, transparent);
+	}
+	.sidebar-link-active {
+		background-color: color-mix(in srgb, var(--color-skyBlue) 20%, transparent);
+		color: #fff;
 	}
 
 	.terminal-sheet-backdrop.is-visible {

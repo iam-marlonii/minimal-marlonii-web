@@ -6,19 +6,22 @@ export class Terminal {
 	private historyIndex: number = -1;
 	private currentPath: string = '/';
 
-	private readonly pages: Record<string, string> = {
-		'about': '/about',
-		'resume': '/resume',
-		'projects': '/projects',
-		'contact': '/contact',
-		'blog': '/blog',
-		'tools': '/tools',
-		'templates': '/templates',
-		'privacy': '/privacy',
-		'terms': '/terms',
-		'home': '/',
-		'index': '/',
-		'cheesecake': '/cheesecake',
+	private readonly files: Record<string, string> = {
+		'home.md': '/?file=home',
+		'experience.ts': '/?file=experience',
+		'education.css': '/?file=education',
+		'projects.sql': '/?file=projects',
+		'contact.html': '/?file=contact',
+		'resume.pdf': '/?file=resume',
+	};
+
+	private readonly aliases: Record<string, string> = {
+		'home': 'home.md',
+		'experience': 'experience.ts',
+		'education': 'education.css',
+		'projects': 'projects.sql',
+		'contact': 'contact.html',
+		'resume': 'resume.pdf',
 	};
 
 	constructor(container: HTMLElement) {
@@ -27,7 +30,6 @@ export class Terminal {
 	}
 
 	private init() {
-		// Create terminal structure
 		this.container.innerHTML = `
 			<div class="terminal-output" id="terminal-output"></div>
 			<div class="terminal-input-line">
@@ -45,23 +47,15 @@ export class Terminal {
 		this.output = this.container.querySelector('#terminal-output') as HTMLElement;
 		this.input = this.container.querySelector('#terminal-input') as HTMLInputElement;
 
-		// Add welcome message
-
-		// Add welcome message / banner
-
 		this.addOutput('--------------------------------');
 		this.addOutput('Welcome to my website!');
 		this.addOutput('Type "help" to see available commands.');
 		this.addOutput('--------------------------------');
-                                           
-                                           
 
-		// Set up event listeners
 		this.input.addEventListener('keydown', (e) => this.handleKeyDown(e));
 		this.input.addEventListener('input', () => this.handleInput());
 		this.input.focus();
 
-		// Focus input when clicking on terminal
 		this.container.addEventListener('click', () => {
 			this.input.focus();
 		});
@@ -102,7 +96,6 @@ export class Terminal {
 	}
 
 	private handleInput() {
-		// Auto-resize input width based on content
 		const span = document.createElement('span');
 		span.style.visibility = 'hidden';
 		span.style.position = 'absolute';
@@ -114,19 +107,26 @@ export class Terminal {
 		this.input.style.width = `${Math.max(20, width + 10)}px`;
 	}
 
+	private resolveFile(name: string): string | undefined {
+		if (this.files[name]) return name;
+		const alias = this.aliases[name.toLowerCase()];
+		if (alias) return alias;
+		return undefined;
+	}
+
 	private handleTabCompletion() {
 		const input = this.input.value.trim();
 		const parts = input.split(' ');
 		const command = parts[0];
 		const arg = parts[1] || '';
 
-		if (command === 'cd' && arg) {
-			// Tab completion for cd command
-			const matches = Object.keys(this.pages).filter(page => 
-				page.startsWith(arg.toLowerCase())
+		if ((command === 'open' || command === 'cd') && arg) {
+			const allNames = [...Object.keys(this.files), ...Object.keys(this.aliases)];
+			const matches = allNames.filter(name =>
+				name.startsWith(arg.toLowerCase())
 			);
 			if (matches.length === 1) {
-				this.input.value = `cd ${matches[0]}`;
+				this.input.value = `${command} ${matches[0]}`;
 			} else if (matches.length > 1) {
 				this.addOutput(matches.join('  '));
 				this.addPrompt();
@@ -140,7 +140,6 @@ export class Terminal {
 			return;
 		}
 
-		// Add command to history
 		this.history.push(command);
 		this.addOutput(`visitor@marlonii ~ % ${command}`, 'command');
 
@@ -149,8 +148,9 @@ export class Terminal {
 		const args = parts.slice(1);
 
 		switch (cmd) {
+			case 'open':
 			case 'cd':
-				this.handleCd(args);
+				this.handleOpen(args);
 				break;
 			case 'ls':
 				this.handleLs();
@@ -173,46 +173,45 @@ export class Terminal {
 		}
 	}
 
-	private handleCd(args: string[]) {
+	private handleOpen(args: string[]) {
 		if (args.length === 0) {
-			this.currentPath = '/';
-			this.addOutput('~');
+			this.addOutput('Usage: open <filename>');
+			this.addOutput(`Available files: ${Object.keys(this.files).join(', ')}`);
 			this.addPrompt();
 			return;
 		}
 
-		const target = args[0].toLowerCase();
-		if (this.pages[target]) {
-			// Navigate to the page
-			this.addOutput(`Navigating to ${target}...`);
+		const target = args[0];
+		const resolved = this.resolveFile(target);
+
+		if (resolved && this.files[resolved]) {
+			this.addOutput(`Opening ${resolved}...`);
 			setTimeout(() => {
-				window.location.href = this.pages[target];
+				window.location.href = this.files[resolved];
 			}, 300);
 		} else {
-			this.addOutput(`cd: no such page: ${target}`);
-			this.addOutput(`Available pages: ${Object.keys(this.pages).filter(p => p !== 'home' && p !== 'index').join(', ')}`);
+			this.addOutput(`open: no such file: ${target}`);
+			this.addOutput(`Available files: ${Object.keys(this.files).join(', ')}`);
 			this.addPrompt();
 		}
 	}
 
 	private handleLs() {
-		const pages = Object.keys(this.pages).filter(p => p !== 'home' && p !== 'index');
-		this.addOutput(pages.join('  '));
+		this.addOutput(Object.keys(this.files).join('  '));
 		this.addPrompt();
 	}
 
 	private handleHelp() {
 		this.addOutput('Available commands:');
-		this.addOutput('  cd <page>     - Navigate to a page (e.g., cd resume)');
-		this.addOutput('  ls            - List available pages');
+		this.addOutput('  open <file>   - Open a file (e.g., open experience.ts)');
+		this.addOutput('  cd <file>     - Alias for open');
+		this.addOutput('  ls            - List available files');
 		this.addOutput('  pwd           - Show current location');
 		this.addOutput('  clear         - Clear terminal output');
 		this.addOutput('  help          - Show this help message');
 		this.addOutput('');
-		this.addOutput('Available pages:');
-		const pages = Object.keys(this.pages).filter(p => p !== 'home' && p !== 'index');
-		pages.forEach(page => this.addOutput(` - ${page}`));
-		// this.addOutput(`  ${Object.keys(this.pages).filter(p => p !== 'home' && p !== 'index').join(', ')}`);
+		this.addOutput('Available files:');
+		Object.keys(this.files).forEach(file => this.addOutput(`  ${file}`));
 		this.addPrompt();
 	}
 
@@ -231,7 +230,16 @@ export class Terminal {
 			this.addOutput('cat: missing file operand');
 			this.addOutput('Try: cat <filename>');
 		} else {
-			this.addOutput(`cat: ${args[0]}: No such file or directory`);
+			const target = args[0];
+			const resolved = this.resolveFile(target);
+			if (resolved) {
+				this.addOutput(`Opening ${resolved}...`);
+				setTimeout(() => {
+					window.location.href = this.files[resolved];
+				}, 300);
+			} else {
+				this.addOutput(`cat: ${target}: No such file or directory`);
+			}
 		}
 		this.addPrompt();
 	}
@@ -245,11 +253,10 @@ export class Terminal {
 	}
 
 	private addPrompt() {
-		// Prompt is always visible in the input line, so we don't need to add it here
+		// Prompt is always visible in the input line
 	}
 
 	private scrollToBottom() {
 		this.output.scrollTop = this.output.scrollHeight;
 	}
 }
-
