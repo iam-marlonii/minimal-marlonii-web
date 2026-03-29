@@ -25,4 +25,5 @@ yarn-error.log*
 .vscode/
 .idea/
 
-.wrangler/
+# Wrangler local cache (points at build output; must not be committed)
+**/.wrangler/
