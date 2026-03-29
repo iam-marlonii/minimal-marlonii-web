@@ -9,12 +9,15 @@ interface Props {
 
 const activeFileId = Astro.props.activeFileId || 'home';
 const activeFile = getFileById(activeFileId);
+const menuTabHref = activeFile.externalUrl ?? `/?file=${activeFile.id}`;
 ---
 
-<header class="menu sticky top-0 z-200 flex w-full items-center bg-[#050a10]/95 border-b border-(--color-skyBlue)/30 font-jetbrains-mono lg:ml-64 lg:h-14 lg:w-[calc(100%-16rem)]">
+<header class="menu sticky top-0 z-200 flex w-full h-14 items-center bg-[#050a10]/95 border-b border-(--color-skyBlue)/30 font-jetbrains-mono lg:ml-64 lg:h-14 lg:w-[calc(100%-16rem)]">
 	<div class="flex items-center w-full h-full">
 		<a
-			href={`/?file=${activeFile.id}`}
+			href={menuTabHref}
+			target={activeFile.externalUrl ? '_blank' : undefined}
+			rel={activeFile.externalUrl ? 'noopener noreferrer' : undefined}
 			class="menu-tab active flex items-center gap-2 h-full px-4 text-sm border-r border-(--color-skyBlue)/15 transition-colors duration-150"
 		>
 			<span class="h-3.5 w-3.5 flex shrink-0" style={`color: ${activeFile.iconColor}`} set:html={getIcon(activeFile.icon)} />
