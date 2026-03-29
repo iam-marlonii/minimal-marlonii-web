@@ -1,0 +1,4 @@
+# Tells Cloudflare Pages where Astro emits the build (server + client assets).
+name = "minimal-marlonii-web"
+compatibility_date = "2025-03-01"
+pages_build_output_dir = "dist"
