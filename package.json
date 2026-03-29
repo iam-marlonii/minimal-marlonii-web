@@ -1,25 +1,16 @@
 {
-  "name": "marlonii-web",
-  "private": true,
+  "name": "minimal-marlonii",
   "type": "module",
-  "workspaces": [
-    "www",
-    "blog",
-    "minimal",
-    "scripts"
-  ],
-  "overrides": {
-    "vite": "^7.3.1"
-  },
+  "version": "0.0.1",
   "scripts": {
-    "build": "npm run build:scripts && npm run build:www && npm run build:blog && npm run build:minimal",
-    "build:scripts": "npm -w marlonii-shared-scripts run build",
-    "build:www": "npm -w www run build",
-    "build:blog": "npm -w blog run build",
-    "build:minimal": "npm -w minimal run build",
-    "dev:www": "npm -w www run dev",
-    "dev:blog": "npm -w blog run dev",
-    "dev:minimal": "npm -w minimal run dev"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^13.1.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^6.0.7"
   }
 }
-
