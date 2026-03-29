@@ -1,3 +1,5 @@
+import { RESUME_PDF_URL } from '../../config/urls';
+
 export class Terminal {
 	private container: HTMLElement;
 	private input!: HTMLInputElement;
@@ -12,7 +14,7 @@ export class Terminal {
 		'education.css': '/?file=education',
 		'projects.sql': '/?file=projects',
 		'contact.html': '/?file=contact',
-		'resume.pdf': '/?file=resume',
+		'resume.pdf': RESUME_PDF_URL,
 	};
 
 	private readonly aliases: Record<string, string> = {
@@ -89,7 +91,7 @@ export class Terminal {
 					this.input.value = this.history[this.historyIndex];
 				}
 			}
-		} else if (e.key === 'Tab') {
+		} else if (e.key === 'Escape' && e.shiftKey) {
 			e.preventDefault();
 			this.handleTabCompletion();
 		}
@@ -173,6 +175,16 @@ export class Terminal {
 		}
 	}
 
+	/** External http(s) URLs open in a new tab; same-site routes use navigation. */
+	private navigateToUrl(url: string) {
+		if (/^https?:\/\//i.test(url)) {
+			const w = window.open(url, '_blank');
+			if (w) w.opener = null;
+		} else {
+			window.location.href = url;
+		}
+	}
+
 	private handleOpen(args: string[]) {
 		if (args.length === 0) {
 			this.addOutput('Usage: open <filename>');
@@ -185,10 +197,15 @@ export class Terminal {
 		const resolved = this.resolveFile(target);
 
 		if (resolved && this.files[resolved]) {
+			const url = this.files[resolved];
 			this.addOutput(`Opening ${resolved}...`);
-			setTimeout(() => {
-				window.location.href = this.files[resolved];
-			}, 300);
+			const isExternal = /^https?:\/\//i.test(url);
+			if (isExternal) {
+				this.navigateToUrl(url);
+				this.addPrompt();
+			} else {
+				setTimeout(() => this.navigateToUrl(url), 300);
+			}
 		} else {
 			this.addOutput(`open: no such file: ${target}`);
 			this.addOutput(`Available files: ${Object.keys(this.files).join(', ')}`);
@@ -205,6 +222,7 @@ export class Terminal {
 		this.addOutput('Available commands:');
 		this.addOutput('  open <file>   - Open a file (e.g., open experience.ts)');
 		this.addOutput('  cd <file>     - Alias for open');
+		this.addOutput('  Shift+Tab     - Complete filename after open/cd');
 		this.addOutput('  ls            - List available files');
 		this.addOutput('  pwd           - Show current location');
 		this.addOutput('  clear         - Clear terminal output');
@@ -233,10 +251,14 @@ export class Terminal {
 			const target = args[0];
 			const resolved = this.resolveFile(target);
 			if (resolved) {
+				const url = this.files[resolved];
 				this.addOutput(`Opening ${resolved}...`);
-				setTimeout(() => {
-					window.location.href = this.files[resolved];
-				}, 300);
+				const isExternal = /^https?:\/\//i.test(url);
+				if (isExternal) {
+					this.navigateToUrl(url);
+				} else {
+					setTimeout(() => this.navigateToUrl(url), 300);
+				}
 			} else {
 				this.addOutput(`cat: ${target}: No such file or directory`);
 			}
