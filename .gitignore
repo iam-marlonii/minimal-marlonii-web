@@ -79,6 +79,6 @@ out/
 .cache/
 .parcel-cache/
 
-# Wrangler local cache (generated; do not commit)
-**/.wrangler/
-.wrangler/
+# # Wrangler local cache (generated; do not commit)
+# **/.wrangler/
+# .wrangler/
