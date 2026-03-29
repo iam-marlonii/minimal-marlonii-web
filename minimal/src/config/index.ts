@@ -1,12 +1,17 @@
+import { RESUME_PDF_URL } from './urls';
+
+export { RESUME_PDF_URL };
+
 export interface SiteFile {
 	id: string;
 	filename: string;
 	icon: string;
 	iconColor: string;
 	content: string;
+	externalUrl?: string;
 }
 
-/** Wraps an array of line strings into editor-line divs with line numbers. */
+/** Wraps an array of line strings into editor-line divs with line numbers */
 function lines(content: string[]): string {
 	return content
 		.map(
@@ -223,29 +228,11 @@ export const siteFiles: SiteFile[] = [
 		filename: 'resume.pdf',
 		icon: 'download-file',
 		iconColor: 'var(--color-vermilion)',
+		externalUrl: RESUME_PDF_URL,
 		content: lines([
-			`<span class="syn-cmt">// resume.pdf — Preview</span>`,
-			`<span class="syn-cmt">// Download or view the full resume below</span>`,
+			`<span class="syn-cmt">// resume.pdf</span>`,
 			``,
-			`<span class="syn-kw">const</span> <span class="syn-var">resume</span> <span class="syn-op">=</span> <span class="syn-punc">{</span>`,
-			`  <span class="syn-prop">name</span><span class="syn-punc">:</span> <span class="syn-str">"Marlon Ausby II"</span><span class="syn-punc">,</span>`,
-			`  <span class="syn-prop">title</span><span class="syn-punc">:</span> <span class="syn-str">"Full Stack Developer &amp; Designer"</span><span class="syn-punc">,</span>`,
-			`  <span class="syn-prop">location</span><span class="syn-punc">:</span> <span class="syn-str">"United States"</span><span class="syn-punc">,</span>`,
-			``,
-			`  <span class="syn-prop">summary</span><span class="syn-punc">:</span> <span class="syn-str">"Problem solver with a passion for building"</span>`,
-			`    <span class="syn-op">+</span> <span class="syn-str">" solutions that are functional and intuitive."</span><span class="syn-punc">,</span>`,
-			``,
-			`  <span class="syn-prop">skills</span><span class="syn-punc">:</span> <span class="syn-punc">[</span>`,
-			`    <span class="syn-str">"TypeScript"</span><span class="syn-punc">,</span> <span class="syn-str">"React"</span><span class="syn-punc">,</span> <span class="syn-str">"Astro"</span><span class="syn-punc">,</span>`,
-			`    <span class="syn-str">"Node.js"</span><span class="syn-punc">,</span> <span class="syn-str">"Python"</span><span class="syn-punc">,</span> <span class="syn-str">"SQL"</span><span class="syn-punc">,</span>`,
-			`    <span class="syn-str">"Tailwind CSS"</span><span class="syn-punc">,</span> <span class="syn-str">"Docker"</span><span class="syn-punc">,</span> <span class="syn-str">"Git"</span><span class="syn-punc">,</span>`,
-			`  <span class="syn-punc">],</span>`,
-			``,
-			`  <span class="syn-cmt">// Update the link below with your resume URL</span>`,
-			`  <span class="syn-prop">downloadUrl</span><span class="syn-punc">:</span> <span class="syn-str">"#"</span><span class="syn-punc">,</span>`,
-			`<span class="syn-punc">};</span>`,
-			``,
-			`<span class="syn-kw">export default</span> <span class="syn-var">resume</span><span class="syn-punc">;</span>`,
+			`<a href="${RESUME_PDF_URL}" target="_blank" rel="noopener noreferrer" style="color: var(--color-skyBlue); text-decoration: underline; text-underline-offset: 3px;">Open PDF in new tab →</a>`,
 		]),
 	},
 ];
