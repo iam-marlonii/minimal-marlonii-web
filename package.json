@@ -8,6 +8,9 @@
     "minimal",
     "scripts"
   ],
+  "overrides": {
+    "vite": "^7.3.1"
+  },
   "scripts": {
     "build": "npm run build:scripts && npm run build:www && npm run build:blog && npm run build:minimal",
     "build:scripts": "npm -w marlonii-shared-scripts run build",
