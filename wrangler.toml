@@ -1,5 +1,0 @@
-# Pages: `pages_build_output_dir` only (no `main` — see Wrangler docs).
-name = "minimal-marlonii-web"
-compatibility_date = "2025-03-01"
-compatibility_flags = [ "nodejs_compat" ]
-pages_build_output_dir = "dist"
