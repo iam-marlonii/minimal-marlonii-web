@@ -126,8 +126,8 @@ export const siteFiles: SiteFile[] = [
 			``,
 			`<span class="syn-cmt">/* Certifications */</span>`,
 			`<span class="syn-sel">.certifications</span> <span class="syn-punc">{</span>`,
-			`  <span class="syn-prop">list-style</span><span class="syn-punc">:</span> <span class="syn-val">none</span><span class="syn-punc">;</span>`,
-			`  <span class="syn-cmt">/* Add your certifications here */</span>`,
+			`<span class="syn-prop">list-style</span><span class="syn-punc">:</span> <span class="syn-val">none</span><span class="syn-punc">;</span>`,
+			`<span class="syn-cmt">/* Add your certifications here */</span>`,
 			`<span class="syn-punc">}</span>`,
 		]),
 	},
@@ -141,14 +141,18 @@ export const siteFiles: SiteFile[] = [
 			`<span class="syn-cmt">-- Querying all projects by Marlon Ausby II</span>`,
 			``,
 			`<span class="syn-kw">SELECT</span>`,
-			`  <span class="syn-var">name</span><span class="syn-punc">,</span>`,
-			`  <span class="syn-var">description</span><span class="syn-punc">,</span>`,
-			`  <span class="syn-var">tech_stack</span><span class="syn-punc">,</span>`,
-			`  <span class="syn-var">live_url</span>`,
-			`<span class="syn-kw">FROM</span> <span class="syn-type">projects</span>`,
-			`<span class="syn-kw">WHERE</span> <span class="syn-var">developer</span> <span class="syn-op">=</span> <span class="syn-str">'Marlon Ausby II'</span>`,
-			`  <span class="syn-kw">AND</span> <span class="syn-var">featured</span> <span class="syn-op">=</span> <span class="syn-val">true</span>`,
-			`<span class="syn-kw">ORDER BY</span> <span class="syn-var">created_at</span> <span class="syn-kw">DESC</span><span class="syn-punc">;</span>`,
+			`	<span class="syn-var">p.name</span><span class="syn-punc">,</span>`,
+			`	<span class="syn-var">p.description</span><span class="syn-punc">,</span>`,
+			`	<span class="syn-var">p.tech_stack</span><span class="syn-punc">,</span>`,
+			`	<span class="syn-var">p.live_url</span>`,
+			`	<span class="syn-var">d.name</span> <span class="syn-kw">AS</span> <span class="syn-prop">'developer'</span><span class="syn-punc">,</span>`,
+			`	<span class="syn-var">o.name</span> <span class="syn-kw">AS</span> <span class="syn-prop">'organization'</span><span class="syn-punc">,</span>`,
+			`<span class="syn-kw">FROM</span> <span class="syn-var">projects</span> <span class="syn-kw">AS</span> <span class="syn-str">p</span>`,
+			`	<span class="syn-kw">JOIN</span> <span class="syn-var">developers</span> <span class="syn-kw">AS</span> <span class="syn-str">d</span> <span class="syn-kw">ON</span> <span class="syn-var">p.developer_id</span> <span class="syn-op">=</span> <span class="syn-var">d.id</span>`,
+			`	<span class="syn-kw">JOIN</span> <span class="syn-var">organizations</span> <span class="syn-kw">AS</span> <span class="syn-str">o</span> <span class="syn-kw">ON</span> <span class="syn-var">p.organization_id</span> <span class="syn-op">=</span> <span class="syn-var">o.id</span>`,
+			`<span class="syn-kw">WHERE</span> <span class="syn-var">p.developer_id</span> <span class="syn-op">=</span> <span class="syn-val">1</span>`,
+			`	<span class="syn-kw">AND</span> <span class="syn-var">p.live</span> <span class="syn-op">=</span> <span class="syn-val">true</span>`,
+			`<span class="syn-kw">ORDER BY</span> <span class="syn-var">name</span> <span class="syn-kw">ASC</span><span class="syn-punc">;</span>`,
 			``,
 			`<span class="syn-cmt">-- Query returned 3 rows</span>`,
 		])
@@ -160,26 +164,50 @@ export const siteFiles: SiteFile[] = [
 						<th>description</th>
 						<th>tech_stack</th>
 						<th>live_url</th>
+						<th>developer</th>
+						<th>organization</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>marlonii-web</td>
-						<td>Personal portfolio website</td>
+						<td>marlonii-web-suite</td>
+						<td>Personal portfolio websites</td>
 						<td>Astro, TypeScript, Tailwind</td>
 						<td><a href="#">marlonii.com</a></td>
+						<td>Marlon Ausby II</td>
+						<td>By Marlon II</td>
 					</tr>
 					<tr>
-						<td>project-two</td>
-						<td>Your next project description</td>
-						<td>React, Node.js, PostgreSQL</td>
-						<td><a href="#">live-link.com</a></td>
+						<td>scripture-commons</td>
+						<td>Open Source scripture study tools</td>
+						<td>Flutter, Go, PostgreSQL</td>
+						<td><a href="#">scripturecommons.com</a></td>
+						<td>Marlon Ausby II</td>
+						<td>Scripture Commons</td>
+					</tr>
+					<tr>
+						<td>fomu</td>
+						<td>Form builder for agile teams</td>
+						<td>Ruby, Rails, SQLite</td>
+						<td><a href="#">gofomu.com</a></td>
+						<td>Marlon Ausby II</td>
+						<td>The 7th Lab</td>
 					</tr>
 					<tr>
 						<td>project-three</td>
 						<td>Another great project</td>
 						<td>Python, Flask, Redis</td>
 						<td><a href="#">live-link.com</a></td>
+						<td>Marlon Ausby II</td>
+						<td> By Marlon II</td>
+					</tr>
+					<tr>
+						<td>project-three</td>
+						<td>Another great project</td>
+						<td>Python, Flask, Redis</td>
+						<td><a href="#">live-link.com</a></td>
+						<td>Marlon Ausby II</td>
+						<td> By Marlon II</td>
 					</tr>
 				</tbody>
 			</table>
