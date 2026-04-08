@@ -178,15 +178,15 @@ export const siteFiles: SiteFile[] = [
 						<td>By Marlon II</td>
 					</tr>
 					<tr>
-						<td>scripture-commons</td>
+						<td>the-bible-api</td>
 						<td>Open Source scripture study tools</td>
 						<td>Flutter, Go, PostgreSQL</td>
-						<td><a href="#">scripturecommons.com</a></td>
+						<td><a href="#">docs.scripturecommons.com</a></td>
 						<td>Marlon Ausby II</td>
 						<td>Scripture Commons</td>
 					</tr>
 					<tr>
-						<td>fomu</td>
+						<td>go-fomu</td>
 						<td>Form builder for agile teams</td>
 						<td>Ruby, Rails, SQLite</td>
 						<td><a href="#">gofomu.com</a></td>
