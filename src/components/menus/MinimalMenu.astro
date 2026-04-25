@@ -2,27 +2,17 @@
 import { getIcon } from '../../config/icons';
 import { getFileById } from '../../config/index';
 
-interface Props {
-	currentPath?: string;
-	activeFileId?: string;
-}
-
-const activeFileId = Astro.props.activeFileId || 'home';
-const activeFile = getFileById(activeFileId);
-const menuTabHref = activeFile.externalUrl ?? `/?file=${activeFile.id}`;
+const defaultFile = getFileById('home');
 ---
 
 <header class="menu sticky top-0 z-200 flex w-full h-14 items-center bg-[#050a10]/95 border-b border-(--color-skyBlue)/30 font-jetbrains-mono lg:ml-64 lg:h-14 lg:w-[calc(100%-16rem)]">
 	<div class="flex items-center w-full h-full">
-		<a
-			href={menuTabHref}
-			target={activeFile.externalUrl ? '_blank' : undefined}
-			rel={activeFile.externalUrl ? 'noopener noreferrer' : undefined}
+		<div
 			class="menu-tab active flex items-center gap-2 h-full px-4 text-sm border-r border-(--color-skyBlue)/15 transition-colors duration-150"
 		>
-			<span class="h-3.5 w-3.5 flex shrink-0" style={`color: ${activeFile.iconColor}`} set:html={getIcon(activeFile.icon)} />
-			<span class="text-white/90 whitespace-nowrap">{activeFile.filename}</span>
-		</a>
+			<span id="menu-tab-icon" class="h-3.5 w-3.5 flex shrink-0" style={`color: ${defaultFile.iconColor}`} set:html={getIcon(defaultFile.icon)} />
+			<span id="menu-tab-filename" class="text-white/90 whitespace-nowrap">{defaultFile.filename}</span>
+		</div>
 		<div class="flex-1"></div>
 	</div>
 </header>
