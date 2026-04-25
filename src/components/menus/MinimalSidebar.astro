@@ -3,12 +3,7 @@ import { getIcon } from '../../config/icons';
 import { siteFiles } from '../../config/index';
 import Terminal from '../terminal/Terminal.astro';
 
-interface Props {
-	currentPath?: string;
-	activeFileId?: string;
-}
-
-const activeFileId = Astro.props.activeFileId || 'home';
+const activeFileId = 'home';
 ---
 
 <div
@@ -93,19 +88,30 @@ const activeFileId = Astro.props.activeFileId || 'home';
             <ul class="sidebar-section-list ml-6">
                 {siteFiles.map((file) => (
                     <li>
-                        <a
-                            href={file.externalUrl ?? `/?file=${file.id}`}
-                            target={file.externalUrl ? '_blank' : undefined}
-                            rel={file.externalUrl ? 'noopener noreferrer' : undefined}
-                            class:list={[
-                                'sidebar-section-link flex flex-row items-center gap-2',
-                                { 'sidebar-link-active': file.id === activeFileId }
-                            ]}
-                            data-file-id={file.id}
-                        >
-                            <span class="w-4 h-4 flex shrink-0" style={`color: ${file.iconColor}`} set:html={getIcon(file.icon)} />
-                            {file.filename}
-                        </a>
+                        {file.externalUrl ? (
+                            <a
+                                href={file.externalUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="sidebar-section-link flex flex-row items-center gap-2"
+                                data-file-id={file.id}
+                            >
+                                <span class="sidebar-item-icon w-4 h-4 flex shrink-0" style={`color: ${file.iconColor}`} set:html={getIcon(file.icon)} />
+                                <span class="sidebar-item-filename">{file.filename}</span>
+                            </a>
+                        ) : (
+                            <button
+                                type="button"
+                                class:list={[
+                                    'sidebar-section-link sidebar-file-btn flex flex-row items-center gap-2',
+                                    { 'sidebar-link-active': file.id === activeFileId }
+                                ]}
+                                data-file-id={file.id}
+                            >
+                                <span class="sidebar-item-icon w-4 h-4 flex shrink-0" style={`color: ${file.iconColor}`} set:html={getIcon(file.icon)} />
+                                <span class="sidebar-item-filename">{file.filename}</span>
+                            </button>
+                        )}
                     </li>
                 ))}
             </ul>
@@ -224,6 +230,14 @@ const activeFileId = Astro.props.activeFileId || 'home';
 		font-size: 0.8125rem;
 		transition: background-color 0.15s ease;
 	}
+	.sidebar-file-btn {
+		background: none;
+		border: none;
+		font: inherit;
+		cursor: pointer;
+		text-align: left;
+		width: 100%;
+	}
 	.sidebar-section-link:hover {
 		background-color: color-mix(in srgb, var(--color-skyBlue) 15%, transparent);
 	}
@@ -328,9 +342,22 @@ const activeFileId = Astro.props.activeFileId || 'home';
 		});
 
 		elPanel.addEventListener('click', (e) => {
-			const a = (e.target as HTMLElement | null)?.closest?.('a');
-			if (!a || !elPanel.contains(a)) return;
-			if (!isLarge()) setOpen(false);
+			const target = e.target as HTMLElement | null;
+
+			const btn = target?.closest?.('button[data-file-id]');
+			if (btn && elPanel.contains(btn)) {
+				const fileId = btn.getAttribute('data-file-id');
+				if (fileId && (window as any).selectFile) {
+					(window as any).selectFile(fileId);
+				}
+				if (!isLarge()) setOpen(false);
+				return;
+			}
+
+			const a = target?.closest?.('a');
+			if (a && elPanel.contains(a)) {
+				if (!isLarge()) setOpen(false);
+			}
 		});
 	}
 
