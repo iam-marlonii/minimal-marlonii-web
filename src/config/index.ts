@@ -30,7 +30,7 @@ export const siteFiles: SiteFile[] = [
 		content: lines([
 			`<span class="syn-heading"># Marlon Ausby II</span>`,
 			``,
-			`<span class="syn-heading">## Building solutions with design and code</span>`,
+			`<span class="syn-heading">## Solving problems with code and design</span>`,
 			``,
 			`<span class="syn-bold">**Status:**</span> Continuously Seeking`,
 			``,
