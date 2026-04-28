@@ -1,19 +1,76 @@
 ---
 import MinimalLayout from '../layouts/MinimalLayout.astro';
-import { getFileById } from '../config/index';
+import { siteFiles, getFileById } from '../config/index';
 
-const url = new URL(Astro.request.url);
-const fileId = url.searchParams.get('file') || 'home';
-const activeFile = getFileById(fileId);
+const defaultFile = getFileById('home');
+
+const fileContentMap: Record<string, string> = {};
+for (const file of siteFiles) {
+	if (!file.externalUrl) {
+		fileContentMap[file.id] = file.content;
+	}
+}
 ---
 
 <MinimalLayout>
 	<section class="editor-section relative flex min-h-[calc(100vh-5rem)] flex-col lg:min-h-[calc(100vh-3.5rem)]">
-		<div class="editor-content-area flex-1 overflow-auto p-4 font-jetbrains-mono text-sm leading-6 text-[#abb2bf]">
-			<Fragment set:html={activeFile.content} />
+		<div id="editor-content" class="editor-content-area flex-1 overflow-auto p-4 font-jetbrains-mono text-sm leading-6 text-[#abb2bf]">
+			<Fragment set:html={defaultFile.content} />
 		</div>
 	</section>
 </MinimalLayout>
+
+<script define:vars={{ fileContentMap }}>
+	window.__FILE_CONTENT_MAP = fileContentMap;
+</script>
+
+<script>
+	function initFileNavigation() {
+		const editorContent = document.getElementById('editor-content');
+		const fileMap = (window as any).__FILE_CONTENT_MAP as Record<string, string> | undefined;
+		if (!editorContent || !fileMap) return;
+
+		(window as any).selectFile = (fileId: string) => {
+			const content = fileMap[fileId];
+			if (!content) return;
+
+			editorContent.innerHTML = content;
+
+			const sidebarBtn = document.querySelector(
+				`button[data-file-id="${fileId}"]`,
+			) as HTMLElement | null;
+
+			if (sidebarBtn) {
+				const iconSpan = sidebarBtn.querySelector('.sidebar-item-icon');
+				const filenameSpan = sidebarBtn.querySelector('.sidebar-item-filename');
+
+				const menuTabIcon = document.getElementById('menu-tab-icon');
+				const menuTabFilename = document.getElementById('menu-tab-filename');
+
+				if (menuTabIcon && iconSpan) {
+					menuTabIcon.innerHTML = iconSpan.innerHTML;
+					menuTabIcon.setAttribute('style', iconSpan.getAttribute('style') || '');
+				}
+				if (menuTabFilename && filenameSpan) {
+					menuTabFilename.textContent = filenameSpan.textContent;
+				}
+			}
+
+			document.querySelectorAll('.sidebar-file-btn[data-file-id]').forEach((el) => {
+				el.classList.toggle(
+					'sidebar-link-active',
+					el.getAttribute('data-file-id') === fileId,
+				);
+			});
+		};
+	}
+
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initFileNavigation);
+	} else {
+		initFileNavigation();
+	}
+</script>
 
 <style>
 	.editor-section {
